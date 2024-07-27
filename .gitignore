@@ -1,2 +1,5 @@
 /venv
 HB/db.sqlite3
+HB/test.py
+.idea
+
