@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .serializers import UserAuthSerializer
+from .serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from django.shortcuts import get_object_or_404
@@ -17,15 +17,15 @@ def login(request):
     if not user.check_password(request.data['password']):
         return Response({'Error': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
     token, created = Token.objects.get_or_create(user=user)
-    serialize = UserAuthSerializer(user)
+    serialize = UserSerializer(user)
     return Response({'user': serialize.data, 'token': token.key})
 
 
 @api_view(['POST'])
 def signup(request):
-    """ Create New User """
+    """ Create New User account"""
     try:
-        serialize = UserAuthSerializer(data=request.data)
+        serialize = UserSerializer(data=request.data)
     except Exception as e:
         return Response({'error': e})
     if serialize.is_valid():
