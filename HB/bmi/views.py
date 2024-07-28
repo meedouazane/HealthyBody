@@ -15,6 +15,7 @@ User = get_user_model()
 @permission_classes([IsAuthenticated])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def get_user(request):
+    """ Get User details """
     user = request.user
     serializer = UserSerializer(user)
     return Response({
@@ -26,6 +27,7 @@ def get_user(request):
 @permission_classes([IsAuthenticated])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def create_bmi(request):
+    """ Calculate user bmi and save it """
     user = request.user
     try:
         height = request.data['height']
@@ -50,25 +52,34 @@ def create_bmi(request):
 @permission_classes([IsAuthenticated])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def get_bmi(request):
-    user = request.user
-    QuerySet = Records.objects.filter(user_id=user).values().all()
-    serializer = BmiSerializer(QuerySet, many=True)
-    return Response(serializer.data)
+    """ Get all saved bmi for a User """
+    try:
+        user = request.user
+        QuerySet = Records.objects.filter(user_id=user).values().all()
+        serializer = BmiSerializer(QuerySet, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'Error': e})
 
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def user_delete(request):
-    user = request.user
-    user.delete()
-    return Response({'Delete': user.username})
+    """ Remove user from database """
+    try:
+        user = request.user
+        user.delete()
+        return Response({'Deletion user': user.username})
+    except Exception as e:
+        return Response({'Error': e})
 
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def user_update(request):
+    """ Update user information """
     user = request.user
     serializer = UserSerializer(user, data=request.data, partial=True)
     if serializer.is_valid():
@@ -81,6 +92,7 @@ def user_update(request):
 @permission_classes([IsAuthenticated])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def delete_bmi(request):
+    """ Remove BMI from database by id """
     user = request.user
     bmi_id = request.data.get('id')
     try:
@@ -89,5 +101,3 @@ def delete_bmi(request):
         return Response({'message': 'BMI record deleted successfully'}, status=status.HTTP_200_OK)
     except Records.DoesNotExist:
         return Response({'error': 'BMI record not found'}, status=status.HTTP_404_NOT_FOUND)
-
-
