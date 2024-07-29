@@ -24,3 +24,4 @@ class Records(models.Model):
     height = models.FloatField()
     date = models.DateField(default=timezone.now)
     bmi = models.FloatField()
+    Classification = models.TextField(null=True)
