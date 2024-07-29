@@ -16,4 +16,4 @@ class BmiSerializer(serializers.ModelSerializer):
     """ Serialize for bmi model """
     class Meta:
         model = Records
-        fields = ['id', 'bmi', 'height', 'weight', 'date']
+        fields = ['id', 'bmi', 'height', 'weight', 'Classification']
