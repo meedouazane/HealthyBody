@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         """ return string object"""
-        return self.email
+        return self.username
 
 
 class Records(models.Model):
