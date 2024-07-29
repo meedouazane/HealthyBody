@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -36,6 +38,18 @@ def create_bmi(request):
         Response({'Error': e})
     bmi = float(weight) / (float(height) * float(height))
     bmi = round(bmi, 2)
+    age = datetime.now().year - user.date_of_birth.year
+    if datetime.now().month > user.date_of_birth.month:
+        age += 1
+    if bmi < 18.5:
+        Classification = 'Underweight'
+    elif bmi < 24.9:
+        Classification = 'Normal Weight'
+    elif bmi < 29.9:
+        Classification = 'Overweight'
+    else:
+        Classification = 'Obese'
+
     try:
         record = Records.objects.create(
             weight=weight,
@@ -43,7 +57,7 @@ def create_bmi(request):
             bmi=bmi,
             user_id=user
         )
-        return Response({'Your BMI is': record.bmi})
+        return Response({'Your BMI is': record.bmi, 'Classification': Classification})
     except Exception as e:
         return Response({'Error': e})
 
