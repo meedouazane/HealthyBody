@@ -55,6 +55,7 @@ def create_bmi(request):
             weight=weight,
             height=height,
             bmi=bmi,
+            Classification=Classification,
             user_id=user
         )
         return Response({'Your BMI is': record.bmi, 'Classification': Classification})
